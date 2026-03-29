@@ -1,0 +1,1 @@
+# ET_GEN_NEWS_EDITOR
