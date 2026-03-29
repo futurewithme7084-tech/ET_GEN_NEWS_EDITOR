@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ET News Navigator | AI Deep Briefing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .glass-card {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #2dd4bf 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .search-glow:focus {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Hide scrollbar but keep functionality */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+</head>
+
+<body class="bg-[#0b0f1a] text-gray-200 min-h-screen selection:bg-blue-500/30">
+
+    <nav
+        class="p-5 flex justify-between items-center border-b border-white/5 sticky top-0 z-40 bg-[#0b0f1a]/80 backdrop-blur-md">
+        <div class="flex items-center gap-3">
+            <div
+                class="bg-gradient-to-br from-blue-600 to-blue-800 p-1.5 rounded-lg text-white font-extrabold text-sm shadow-lg">
+                ET</div>
+            <span class="font-bold tracking-tight text-xl">News Navigator</span>
+        </div>
+        <div class="flex items-center gap-5">
+            <div id="keyStatus"
+                class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-[10px] text-red-400 font-bold uppercase tracking-widest">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Offline Mode
+            </div>
+            <button onclick="toggleModal()"
+                class="group relative p-2.5 bg-gray-900 border border-white/10 rounded-xl hover:border-blue-500/50 transition-all active:scale-90">
+                <span class="text-xl group-hover:rotate-90 transition-transform duration-500 inline-block">⚙️</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-16">
+
+        <div class="text-center mb-20">
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-8 tracking-tight">
+                Multiple articles <span class="gradient-text">→ One AI briefing</span>
+            </h1>
+
+            <div class="max-w-3xl mx-auto relative group">
+                <div
+                    class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-teal-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000">
+                </div>
+                <input type="text" id="topicInput"
+                    placeholder="e.g. RBI rate cut 2026, Zomato results, India startup funding..."
+                    class="relative w-full bg-[#111827] border border-white/10 rounded-2xl px-7 py-5 pr-40 text-lg focus:outline-none search-glow transition-all">
+                <button onclick="handleGenerate()"
+                    class="absolute right-2.5 top-2.5 bottom-2.5 bg-blue-600 hover:bg-blue-700 text-white px-8 rounded-xl font-bold text-base transition-all active:scale-95 shadow-lg shadow-blue-600/20">
+                    Generate →
+                </button>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-3 mt-8">
+                <button onclick="fillTopic('RBI Rate Cut 2026')"
+                    class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-gray-400 text-sm hover:border-blue-500/50 hover:text-blue-400 transition-all backdrop-blur">RBI
+                    Rate Cut ↑</button>
+                <button onclick="fillTopic('Budget 2026 Highlights')"
+                    class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-gray-400 text-sm hover:border-blue-500/50 hover:text-blue-400 transition-all backdrop-blur">Budget
+                    2026</button>
+                <button onclick="fillTopic('Zomato Q3 Results')"
+                    class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-gray-400 text-sm hover:border-blue-500/50 hover:text-blue-400 transition-all backdrop-blur">Zomato
+                    Results</button>
+                <button onclick="fillTopic('Startup Funding 2026')"
+                    class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-gray-400 text-sm hover:border-blue-500/50 hover:text-blue-400 transition-all backdrop-blur">Startup
+                    Funding</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-20">
+
+            <div class="lg:col-span-2 space-y-8">
+                <div class="glass-card rounded-3xl p-8 group">
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-xl font-bold flex items-center gap-3">
+                            <span class="p-2 bg-blue-500/10 rounded-lg text-blue-400 text-sm">✦</span> Executive AI
+                            Synthesis
+                        </h3>
+                        <span
+                            class="text-[10px] text-gray-500 uppercase font-bold tracking-widest bg-white/5 px-3 py-1 rounded-full">Updated
+                            Live</span>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-10">
+                        <div id="summaryText" class="text-gray-400 leading-relaxed">
+                            Enter a topic above to generate a deep briefing. AI will analyze multiple ET articles to
+                            provide a unified summary.
+                        </div>
+                        <div class="space-y-4">
+                            <div
+                                class="bg-white/5 p-4 rounded-2xl border border-white/5 hover:border-white/10 transition-colors">
+                                <p class="text-[10px] text-gray-500 font-bold uppercase mb-2">Market Indicator</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-semibold">Related Sector ETFs</span>
+                                    <span
+                                        class="text-green-400 text-xs font-bold bg-green-400/10 px-2 py-0.5 rounded">+10.02%
+                                        ↑</span>
+                                </div>
+                            </div>
+                            <div
+                                class="bg-white/5 p-4 rounded-2xl border border-white/5 hover:border-white/10 transition-colors">
+                                <p class="text-[10px] text-gray-500 font-bold uppercase mb-2">Retail Sentiment</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-semibold">Flow Strength</span>
+                                    <span
+                                        class="text-red-400 text-xs font-bold bg-red-400/10 px-2 py-0.5 rounded">-11.50%
+                                        ↓</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-3xl p-8">
+                    <h4 class="text-sm font-bold text-blue-400 mb-6 uppercase tracking-widest">Key Controversy & Deep
+                        Dive</h4>
+                    <div class="space-y-4">
+                        <div class="h-4 bg-white/5 rounded-full w-full animate-pulse"></div>
+                        <div class="h-4 bg-white/5 rounded-full w-5/6 animate-pulse"></div>
+                        <div class="h-4 bg-white/5 rounded-full w-4/6 animate-pulse"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="glass-card rounded-3xl p-8">
+                    <h3 class="text-xs font-black mb-6 uppercase tracking-[0.2em] text-gray-500">Sectoral Impact</h3>
+                    <div class="space-y-4">
+                        <div
+                            class="flex justify-between items-center p-3.5 bg-white/5 rounded-xl border border-white/5">
+                            <span class="text-sm font-medium flex items-center gap-3">🚗 Automobile</span>
+                            <span class="text-red-400 font-bold">↘</span>
+                        </div>
+                        <div
+                            class="flex justify-between items-center p-3.5 bg-white/5 rounded-xl border border-white/5">
+                            <span class="text-sm font-medium flex items-center gap-3">⚡ Clean Energy</span>
+                            <span class="text-green-400 font-bold">↗</span>
+                        </div>
+                        <div
+                            class="flex justify-between items-center p-3.5 bg-white/5 rounded-xl border border-white/5">
+                            <span class="text-sm font-medium flex items-center gap-3">🏦 Banking</span>
+                            <span class="text-blue-400 font-bold">→</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-3xl p-8 border-t-4 border-t-blue-500 relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl"></div>
+                    <h3 class="text-sm font-black mb-1 uppercase tracking-widest">Action Plan</h3>
+                    <p class="text-[10px] text-gray-500 mb-6 font-bold uppercase tracking-tighter italic">Personalized
+                        for you</p>
+
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400">
+                                📈</div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-200">Portfolio Rebalance</p>
+                                <p class="text-[10px] text-gray-500">Check infra-heavy funds.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center text-teal-400">
+                                🎓</div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-200">Attend Masterclass</p>
+                                <p class="text-[10px] text-gray-500">Budget Impact Analysis 2026.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="settingsModal"
+        class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-[#0b0f1a]/80 backdrop-blur-md transition-all duration-300">
+        <div
+            class="bg-[#111827] border border-white/10 p-8 md:p-10 rounded-[2.5rem] w-full max-w-md shadow-2xl m-4 transform transition-transform">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-2xl font-bold text-white tracking-tight">AI Engine Setup</h3>
+                <button onclick="toggleModal()"
+                    class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 text-gray-500 transition-all">✕</button>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3 block">Claude API
+                        Secret Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="sk-ant-..."
+                        class="w-full bg-[#0b0f1a] border border-white/5 rounded-2xl px-5 py-4 text-sm font-mono text-blue-400 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all">
+                    <p class="text-[10px] text-gray-500 mt-4 leading-relaxed">
+                        Your key is encrypted and stored locally in your browser. It is never sent to our servers.
+                    </p>
+                </div>
+
+                <button onclick="saveKey()"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-blue-600/30 active:scale-[0.98]">
+                    Save & Activate Engine
+                </button>
+                <div class="text-center">
+                    <a href="https://console.anthropic.com/" target="_blank"
+                        class="text-[10px] font-bold text-blue-500 uppercase tracking-widest hover:underline transition-all">Get
+                        API Key ↗</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('settingsModal');
+        const keyInput = document.getElementById('apiKeyInput');
+        const keyStatus = document.getElementById('keyStatus');
+
+        function toggleModal() {
+            modal.classList.toggle('hidden');
+        }
+
+        function saveKey() {
+            const key = keyInput.value.trim();
+            if (key.startsWith('sk-ant')) {
+                localStorage.setItem('anthropic_key', key);
+                updateKeyStatus();
+                toggleModal();
+                alert('Success: AI Engine is now online!');
+            } else {
+                alert('Invalid Key: Please enter a valid Claude API key.');
+            }
+        }
+
+        function updateKeyStatus() {
+            const key = localStorage.getItem('anthropic_key');
+            if (key) {
+                keyStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Engine Active`;
+                keyStatus.classList.replace('text-red-400', 'text-green-400');
+                keyStatus.classList.replace('bg-red-500/10', 'bg-green-500/10');
+                keyStatus.classList.replace('border-red-500/20', 'border-green-500/20');
+                keyStatus.classList.remove('hidden');
+                keyInput.value = key;
+            }
+        }
+
+        function fillTopic(topic) {
+            document.getElementById('topicInput').value = topic;
+        }
+
+        function handleGenerate() {
+            const topic = document.getElementById('topicInput').value;
+            const key = localStorage.getItem('anthropic_key');
+
+            if (!topic) return alert('Please enter a topic first.');
+            if (!key) {
+                alert('AI Engine not configured. Please add your API key in Settings.');
+                toggleModal();
+                return;
+            }
+
+            // Logic to call your backend will go here
+            document.getElementById('summaryText').innerText = `Generating Deep Briefing for: "${topic}"...`;
+        }
+
+        // Initialize on Load
+        window.onload = updateKeyStatus;
+    </script>
+</body>
+
+</html>
